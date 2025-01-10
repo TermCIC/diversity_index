@@ -58,11 +58,11 @@
         .grid-cell button {
             width: 100%;
             height: 100%;
-            background: url('https://github.com/TermCIC/diversity_index/blob/main/crop.png?raw=true') no-repeat center;
-            background-size: cover;
             border: none;
             cursor: pointer;
             transition: transform 0.2s ease;
+            background-size: cover;
+            background-position: center;
         }
 
         .grid-cell button:hover {
@@ -97,19 +97,6 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -130,79 +117,150 @@
     </div>
 
     <script>
-        // Define insect compositions and proportions for crop and weed
+        // Plant occurrence ratios
+        const plantOccurrence = {
+            plant_1: 0.3, // 30%
+            plant_2: 0.25, // 25%
+            plant_3: 0.2, // 20%
+            plant_4: 0.15, // 15%
+            plant_5: 0.1  // 10%
+        };
+
+        // Define insect species ratios for each plant
         const insectComposition = {
-            crop: [
-                { name: "Aphid", probability: 0.5 },
-                { name: "Beetle", probability: 0.2 },
-                { name: "Caterpillar", probability: 0.2 },
-                { name: "Thrip", probability: 0.1 }
+            plant_1: [
+                { name: "Aphid", ratio: 0.3 },
+                { name: "Beetle", ratio: 0.2 },
+                { name: "Caterpillar", ratio: 0.1 },
+                { name: "Thrip", ratio: 0.15 },
+                { name: "Grasshopper", ratio: 0.1 },
+                { name: "Mite", ratio: 0.05 },
+                { name: "Mealybug", ratio: 0.05 },
+                { name: "Leafhopper", ratio: 0.03 },
+                { name: "Parasitic Wasp", ratio: 0.01 },
+                { name: "Pollinator", ratio: 0.01 }
             ],
-            weed: [
-                { name: "Grasshopper", probability: 0.4 },
-                { name: "Mite", probability: 0.3 },
-                { name: "Weevil", probability: 0.2 },
-                { name: "Mealybug", probability: 0.1 }
+            plant_2: [
+                { name: "Aphid", ratio: 0.2 },
+                { name: "Beetle", ratio: 0.25 },
+                { name: "Caterpillar", ratio: 0.15 },
+                { name: "Thrip", ratio: 0.1 },
+                { name: "Grasshopper", ratio: 0.1 },
+                { name: "Mite", ratio: 0.05 },
+                { name: "Mealybug", ratio: 0.05 },
+                { name: "Leafhopper", ratio: 0.05 },
+                { name: "Parasitic Wasp", ratio: 0.03 },
+                { name: "Pollinator", ratio: 0.02 }
+            ],
+            plant_3: [
+                { name: "Aphid", ratio: 0.25 },
+                { name: "Beetle", ratio: 0.15 },
+                { name: "Caterpillar", ratio: 0.1 },
+                { name: "Thrip", ratio: 0.2 },
+                { name: "Grasshopper", ratio: 0.1 },
+                { name: "Mite", ratio: 0.1 },
+                { name: "Mealybug", ratio: 0.05 },
+                { name: "Leafhopper", ratio: 0.03 },
+                { name: "Parasitic Wasp", ratio: 0.01 },
+                { name: "Pollinator", ratio: 0.01 }
+            ],
+            plant_4: [
+                { name: "Aphid", ratio: 0.35 },
+                { name: "Beetle", ratio: 0.15 },
+                { name: "Caterpillar", ratio: 0.1 },
+                { name: "Thrip", ratio: 0.1 },
+                { name: "Grasshopper", ratio: 0.05 },
+                { name: "Mite", ratio: 0.1 },
+                { name: "Mealybug", ratio: 0.05 },
+                { name: "Leafhopper", ratio: 0.05 },
+                { name: "Parasitic Wasp", ratio: 0.03 },
+                { name: "Pollinator", ratio: 0.02 }
+            ],
+            plant_5: [
+                { name: "Aphid", ratio: 0.1 },
+                { name: "Beetle", ratio: 0.1 },
+                { name: "Caterpillar", ratio: 0.05 },
+                { name: "Thrip", ratio: 0.3 },
+                { name: "Grasshopper", ratio: 0.3 },
+                { name: "Mite", ratio: 0.1 },
+                { name: "Mealybug", ratio: 0.03 },
+                { name: "Leafhopper", ratio: 0.01 },
+                { name: "Parasitic Wasp", ratio: 0.005 },
+                { name: "Pollinator", ratio: 0.005 }
             ]
         };
-    
-        // Function to randomly select an insect based on probabilities
-        function getRandomInsect(type) {
-            const insects = insectComposition[type];
+
+        // Define plant images
+        const plantImages = {
+            plant_1: "https://github.com/TermCIC/diversity_index/blob/main/plant_1.png?raw=true",
+            plant_2: "https://github.com/TermCIC/diversity_index/blob/main/plant_2.png?raw=true",
+            plant_3: "https://github.com/TermCIC/diversity_index/blob/main/plant_3.png?raw=true",
+            plant_4: "https://github.com/TermCIC/diversity_index/blob/main/plant_4.png?raw=true",
+            plant_5: "https://github.com/TermCIC/diversity_index/blob/main/plant_5.png?raw=true"
+        };
+
+        // Function to randomly select a plant type
+        function getRandomPlantType() {
             const rand = Math.random();
-            let cumulativeProbability = 0;
-    
-            for (const insect of insects) {
-                cumulativeProbability += insect.probability;
-                if (rand <= cumulativeProbability) {
-                    return insect.name;
-                }
+            let cumulative = 0;
+            for (const [plant, ratio] of Object.entries(plantOccurrence)) {
+                cumulative += ratio;
+                if (rand < cumulative) return plant;
             }
         }
-    
-        // Button types and their images
-        const buttonTypes = {
-            crop: 'https://github.com/TermCIC/diversity_index/blob/main/crop.png?raw=true',
-            weed: 'https://github.com/TermCIC/diversity_index/blob/main/weed.png?raw=true'
-        };
-    
-        // Ratio of weeds (e.g., 0.1 means 10% weeds)
-        const WEED_RATIO = 0.1;
-    
+
+        // Function to get insect counts based on ratios
+        function getInsectCounts(type, abundance) {
+            const composition = insectComposition[type];
+            const counts = {};
+
+            composition.forEach(({ name, ratio }) => {
+                counts[name] = Math.floor(ratio * abundance);
+            });
+
+            let total = Object.values(counts).reduce((a, b) => a + b, 0);
+            while (total < abundance) {
+                const randomIndex = Math.floor(Math.random() * composition.length);
+                counts[composition[randomIndex].name]++;
+                total++;
+            }
+
+            return counts;
+        }
+
         // Create the farm grid
-        const farm = document.getElementById('farm');
-        const results = document.getElementById('results');
-    
+        const farm = document.getElementById("farm");
+        const results = document.getElementById("results");
+
         for (let i = 0; i < 10000; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'grid-cell';
-    
-            const button = document.createElement('button');
-    
-            // Determine if this cell should be a weed or crop based on the ratio
-            const buttonType = Math.random() < WEED_RATIO ? 'weed' : 'crop';
-            button.style.backgroundImage = `url(${buttonTypes[buttonType]})`;
-    
+            const cell = document.createElement("div");
+            cell.className = "grid-cell";
+
+            const button = document.createElement("button");
+
+            // Select a random plant type
+            const plantType = getRandomPlantType();
+            button.style.backgroundImage = `url(${plantImages[plantType]})`;
+
             // Attach click event to button
-            button.addEventListener('click', () => {
-                // Get a random insect based on the button type
-                const insect = getRandomInsect(buttonType);
-                button.textContent = insect;
-    
-                // Append result to the results list
-                const resultItem = document.createElement('li');
-                resultItem.textContent = `Cell ${i + 1} (${buttonType}): ${insect}`;
+            button.addEventListener("click", () => {
+                const counts = getInsectCounts(plantType, 5); // Fixed abundance for simplicity
+                const insectSummary = Object.entries(counts)
+                    .map(([name, count]) => `${name}: ${count}`)
+                    .join(", ");
+
+                button.textContent = "Sampled";
+
+                const resultItem = document.createElement("li");
+                resultItem.textContent = `Cell ${i + 1} (${plantType}): ${insectSummary}`;
                 results.appendChild(resultItem);
-    
-                // Disable and hide the button
+
                 button.disabled = true;
             });
-    
+
             cell.appendChild(button);
             farm.appendChild(cell);
         }
     </script>
-    
-    
 </body>
 </html>
