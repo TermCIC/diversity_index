@@ -84,7 +84,7 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             background-color: #f9f9f9;
-            margin: auto;
+            margin: 0;
             /* Ensure no external margin */
         }
 
@@ -136,7 +136,7 @@
             padding: 6px;
             text-align: center;
             border: 1px solid #ddd;
-            font-size: 12px;
+            font-size: 14px;
         }
 
         table th {
@@ -157,8 +157,17 @@
 
         table tfoot td {
             font-weight: bold;
-            text-align: left;
+            text-align: center;
             background: #f4f4f4;
+        }
+
+        .plant-results {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .plant-header {
@@ -337,33 +346,37 @@
                     insects: {}
                 };
 
-                // Create a new table for this plant type
+                // Create a new div container for this plant type
                 const resultsContainer = document.getElementById("results");
-                const tableContainer = document.createElement("div");
-                tableContainer.id = `table-${plantType}`;
-                tableContainer.innerHTML = `
-        <div style="display: flex; align-items: left; margin-bottom: 10px; margin-left: 0;">
-            <img src="${plantImages[plantType]}" alt="${plantType}" style="width: 50px; height: 50px; margin-right: 10px;">
-            <h3 style="margin: 0;">${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
-        </div>
-        <table border="1" style="width: 100%; margin-bottom: 20px;">
-            <thead>
-                <tr>
-                    <th>Insect</th>
-                    <th>Count</th>
-                    <th>Percentage</th>
-                </tr>
-            </thead>
-            <tbody id="table-body-${plantType}">
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
-                </tr>
-            </tfoot>
-        </table>
-    `;
-                resultsContainer.appendChild(tableContainer);
+                const plantResultsDiv = document.createElement("div");
+                plantResultsDiv.id = `results-${plantType}`;
+                plantResultsDiv.className = "plant-results";
+                plantResultsDiv.innerHTML = `
+            <div class="plant-header">
+                <img src="${plantImages[plantType]}" alt="${plantType}" class="plant-image">
+                <h3>${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Insect</th>
+                        <th>Count</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body-${plantType}">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        `;
+                resultsContainer.appendChild(plantResultsDiv);
+                // Add a line break
+                const lineBreak = document.createElement("br");
+                resultsContainer.appendChild(lineBreak);
             }
 
             // Update the results for the plant type
@@ -383,14 +396,14 @@
             for (const [insect, count] of Object.entries(plantResults.insects)) {
                 const percentage = ((count / totalInsects) * 100).toFixed(2);
                 const row = `
-        <tr>
-            <td style="display: flex; align-items: center;">
-                ${insect}
-                <img src="${insectImages[insect.toLowerCase()]}" alt="${insect}" style="width: 40px; height: 40px; margin-left: 5px;">
-            </td>
-            <td>${count}</td>
-            <td>${percentage}%</td>
-        </tr>
+            <tr>
+                <td>
+                    ${insect} <br>
+                    <img src="${insectImages[insect.toLowerCase()]}" alt="${insect}" style="width: 40px; height: 40px; margin: auto;">
+                </td>
+                <td>${count}</td>
+                <td>${percentage}%</td>
+            </tr>
         `;
                 tableBody.innerHTML += row;
             }
