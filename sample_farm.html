@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,7 +47,8 @@
             display: grid;
             grid-template-columns: repeat(100, 1fr);
             gap: 2px;
-            width: 2000px; /* Fixed size for scroll */
+            width: 2000px;
+            /* Fixed size for scroll */
             height: 2000px;
         }
 
@@ -72,7 +74,8 @@
         .grid-cell button:disabled {
             background: #ddd;
             cursor: not-allowed;
-            display: none; /* Hide button when disabled */
+            display: none;
+            /* Hide button when disabled */
         }
 
         #results-container {
@@ -99,6 +102,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Farm Sampling Simulation</h1>
     <h3>by Dr. Chun-I Chiu</h3>
@@ -199,6 +203,20 @@
             plant_5: "https://github.com/TermCIC/diversity_index/blob/main/plant_5.png?raw=true"
         };
 
+        // Define insect images
+        const insectImages = {
+            aphid: "https://github.com/TermCIC/diversity_index/blob/main/aphid.png?raw=true",
+            beetle: "https://github.com/TermCIC/diversity_index/blob/main/beetle.png?raw=true",
+            caterpillar: "https://github.com/TermCIC/diversity_index/blob/main/caterpillar.png?raw=true",
+            thrip: "https://github.com/TermCIC/diversity_index/blob/main/thrip.png?raw=true",
+            grasshopper: "https://github.com/TermCIC/diversity_index/blob/main/grasshopper.png?raw=true",
+            mite: "https://github.com/TermCIC/diversity_index/blob/main/mite.png?raw=true",
+            mealybug: "https://github.com/TermCIC/diversity_index/blob/main/mealybug.png?raw=true",
+            leafhopper: "https://github.com/TermCIC/diversity_index/blob/main/leafhopper.png?raw=true",
+            parasitic_wasp: "https://github.com/TermCIC/diversity_index/blob/main/parasitic_wasp.png?raw=true",
+            pollinator: "https://github.com/TermCIC/diversity_index/blob/main/bee.png?raw=true"
+        };
+
         // Function to randomly select a plant type
         function getRandomPlantType() {
             const rand = Math.random();
@@ -228,9 +246,80 @@
             return counts;
         }
 
+        // Object to store sampling results
+        const samplingResults = {};
+
+        // Function to initialize or update the results for a plant
+        function updateResultsTable(plantType, counts) {
+            // If the table for this plant type doesn't exist, create it
+            if (!samplingResults[plantType]) {
+                samplingResults[plantType] = {
+                    totalPlantsSampled: 0,
+                    insects: {}
+                };
+
+                // Create a new table for this plant type
+                const resultsContainer = document.getElementById("results");
+                const tableContainer = document.createElement("div");
+                tableContainer.id = `table-${plantType}`;
+                tableContainer.innerHTML = `
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <img src="${plantImages[plantType]}" alt="${plantType}" style="width: 50px; height: 50px; margin-right: 10px;">
+                <h3 style="margin: 0;">${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
+            </div>
+            <table border="1" style="width: 100%; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th>Insect</th>
+                        <th>Count</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body-${plantType}">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        `;
+                resultsContainer.appendChild(tableContainer);
+            }
+
+            // Update the results for the plant type
+            const plantResults = samplingResults[plantType];
+            plantResults.totalPlantsSampled++;
+            for (const [insect, count] of Object.entries(counts)) {
+                if (!plantResults.insects[insect]) {
+                    plantResults.insects[insect] = 0;
+                }
+                plantResults.insects[insect] += count;
+            }
+
+            // Update the table body
+            const tableBody = document.getElementById(`table-body-${plantType}`);
+            tableBody.innerHTML = "";
+            const totalInsects = Object.values(plantResults.insects).reduce((a, b) => a + b, 0);
+            for (const [insect, count] of Object.entries(plantResults.insects)) {
+                const percentage = ((count / totalInsects) * 100).toFixed(2);
+                const row = `
+                <tr>
+                    <td>${insect}</td>
+                    <td>${count}</td>
+                    <td>${percentage}%</td>
+                </tr>
+            `;
+                tableBody.innerHTML += row;
+            }
+
+            // Update the total plants sampled
+            const totalSampled = document.getElementById(`total-sampled-${plantType}`);
+            totalSampled.textContent = plantResults.totalPlantsSampled;
+        }
+
         // Create the farm grid
         const farm = document.getElementById("farm");
-        const results = document.getElementById("results");
 
         for (let i = 0; i < 10000; i++) {
             const cell = document.createElement("div");
@@ -245,16 +334,11 @@
             // Attach click event to button
             button.addEventListener("click", () => {
                 const counts = getInsectCounts(plantType, 5); // Fixed abundance for simplicity
-                const insectSummary = Object.entries(counts)
-                    .map(([name, count]) => `${name}: ${count}`)
-                    .join(", ");
 
-                button.textContent = "Sampled";
+                // Update the results table
+                updateResultsTable(plantType, counts);
 
-                const resultItem = document.createElement("li");
-                resultItem.textContent = `Cell ${i + 1} (${plantType}): ${insectSummary}`;
-                results.appendChild(resultItem);
-
+                // Disable the button
                 button.disabled = true;
             });
 
@@ -263,4 +347,5 @@
         }
     </script>
 </body>
+
 </html>
