@@ -84,6 +84,40 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             background-color: #f9f9f9;
+            margin: 0;
+            /* Ensure no external margin */
+        }
+
+        #results {
+            text-align: left;
+            list-style-position: inside;
+            margin: 0;
+            /* Ensure no external margin */
+            padding: 0;
+            /* Remove internal padding */
+        }
+
+        #results>div {
+            margin: 0;
+            /* Remove left spacing for each table container */
+            padding: 0;
+            /* Ensure no padding */
+        }
+
+        #results table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            /* Remove external margin */
+            padding: 0;
+            /* Remove internal padding */
+        }
+
+        #results .plant-header {
+            margin: 0;
+            /* Remove any margin around plant headers */
+            padding: 0;
+            /* Ensure no padding */
         }
 
         table {
@@ -97,7 +131,8 @@
             color: white;
         }
 
-        table th, table td {
+        table th,
+        table td {
             padding: 6px;
             text-align: center;
             border: 1px solid #ddd;
@@ -105,7 +140,7 @@
 
         table th {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         table tbody tr:hover {
@@ -306,7 +341,7 @@
                 const tableContainer = document.createElement("div");
                 tableContainer.id = `table-${plantType}`;
                 tableContainer.innerHTML = `
-        <div style="display: flex; align-items: left; margin-bottom: 10px;">
+        <div style="display: flex; align-items: left; margin-bottom: 10px; margin-left: 0;">
             <img src="${plantImages[plantType]}" alt="${plantType}" style="width: 50px; height: 50px; margin-right: 10px;">
             <h3 style="margin: 0;">${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
         </div>
