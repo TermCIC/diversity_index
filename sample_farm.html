@@ -7,7 +7,7 @@
     <title>Farm Sampling Simulation</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
@@ -48,7 +48,6 @@
             grid-template-columns: repeat(100, 1fr);
             gap: 2px;
             width: 2000px;
-            /* Fixed size for scroll */
             height: 2000px;
         }
 
@@ -65,6 +64,7 @@
             transition: transform 0.2s ease;
             background-size: cover;
             background-position: center;
+            border-radius: 4px;
         }
 
         .grid-cell button:hover {
@@ -75,7 +75,6 @@
             background: #ddd;
             cursor: not-allowed;
             display: none;
-            /* Hide button when disabled */
         }
 
         #results-container {
@@ -86,19 +85,61 @@
             background-color: #f9f9f9;
         }
 
-        #results {
-            font-size: 14px;
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        #results li {
-            margin: 5px 0;
-            padding: 5px;
-            background: #fff;
+        table thead {
+            background: #007bff;
+            color: white;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
             border: 1px solid #ddd;
-            border-radius: 4px;
+        }
+
+        table th {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        table tbody tr:hover {
+            background: #f1f1f1;
+        }
+
+        table tbody td img {
+            display: block;
+            margin: 0 auto;
+            width: 24px;
+            height: 24px;
+        }
+
+        table tfoot td {
+            font-weight: bold;
+            text-align: left;
+            background: #f4f4f4;
+        }
+
+        .plant-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .plant-header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 50%;
+        }
+
+        .plant-header h3 {
+            margin: 0;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -213,7 +254,7 @@
             mite: "https://github.com/TermCIC/diversity_index/blob/main/mite.png?raw=true",
             mealybug: "https://github.com/TermCIC/diversity_index/blob/main/mealybug.png?raw=true",
             leafhopper: "https://github.com/TermCIC/diversity_index/blob/main/leafhopper.png?raw=true",
-            parasitic_wasp: "https://github.com/TermCIC/diversity_index/blob/main/parasitic_wasp.png?raw=true",
+            'parasitic wasp': "https://github.com/TermCIC/diversity_index/blob/main/parasitoid_wasp.png?raw=true",
             pollinator: "https://github.com/TermCIC/diversity_index/blob/main/bee.png?raw=true"
         };
 
@@ -263,27 +304,27 @@
                 const tableContainer = document.createElement("div");
                 tableContainer.id = `table-${plantType}`;
                 tableContainer.innerHTML = `
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <img src="${plantImages[plantType]}" alt="${plantType}" style="width: 50px; height: 50px; margin-right: 10px;">
-                <h3 style="margin: 0;">${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
-            </div>
-            <table border="1" style="width: 100%; margin-bottom: 20px;">
-                <thead>
-                    <tr>
-                        <th>Insect</th>
-                        <th>Count</th>
-                        <th>Percentage</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body-${plantType}">
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
-                    </tr>
-                </tfoot>
-            </table>
-        `;
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+            <img src="${plantImages[plantType]}" alt="${plantType}" style="width: 50px; height: 50px; margin-right: 10px;">
+            <h3 style="margin: 0;">${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
+        </div>
+        <table border="1" style="width: 100%; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>Insect</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-${plantType}">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
                 resultsContainer.appendChild(tableContainer);
             }
 
@@ -304,12 +345,15 @@
             for (const [insect, count] of Object.entries(plantResults.insects)) {
                 const percentage = ((count / totalInsects) * 100).toFixed(2);
                 const row = `
-                <tr>
-                    <td>${insect}</td>
-                    <td>${count}</td>
-                    <td>${percentage}%</td>
-                </tr>
-            `;
+        <tr>
+            <td style="display: flex; align-items: center;">
+                ${insect}
+                <img src="${insectImages[insect.toLowerCase()]}" alt="${insect}" style="width: 40px; height: 40px; margin-left: 5px;">
+            </td>
+            <td>${count}</td>
+            <td>${percentage}%</td>
+        </tr>
+        `;
                 tableBody.innerHTML += row;
             }
 
