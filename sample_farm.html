@@ -141,12 +141,15 @@
             "Thrip",
             "Mealybug",
         ];
-    
+        
         // Button types and their images
         const buttonTypes = {
             crop: 'https://github.com/TermCIC/diversity_index/blob/main/crop.png?raw=true',
             weed: 'https://github.com/TermCIC/diversity_index/blob/main/weed.png?raw=true'
         };
+    
+        // Ratio of weeds (e.g., 0.1 means 10% weeds)
+        const WEED_RATIO = 0.1;
     
         // Create the farm grid
         const farm = document.getElementById('farm');
@@ -158,8 +161,8 @@
     
             const button = document.createElement('button');
     
-            // Randomly select button type (crop or weed)
-            const buttonType = Math.random() < 0.5 ? 'crop' : 'weed';
+            // Determine if this cell should be a weed or crop based on the ratio
+            const buttonType = Math.random() < WEED_RATIO ? 'weed' : 'crop';
             button.style.backgroundImage = `url(${buttonTypes[buttonType]})`;
     
             // Attach click event to button
@@ -181,5 +184,6 @@
             farm.appendChild(cell);
         }
     </script>
+    
 </body>
 </html>
