@@ -209,78 +209,69 @@
     </div>
 
     <script>
-        // Plant occurrence ratios
+        // Define plant occurrence ratios and their corresponding abundance
         const plantOccurrence = {
-            plant_1: 0.3, // 30%
-            plant_2: 0.25, // 25%
-            plant_3: 0.2, // 20%
-            plant_4: 0.15, // 15%
-            plant_5: 0.1  // 10%
+            plant_1: { ratio: 0.3, abundance: 6 }, // Plant 1 has the least abundance
+            plant_2: { ratio: 0.25, abundance: 5 },
+            plant_3: { ratio: 0.2, abundance: 4 },
+            plant_4: { ratio: 0.15, abundance: 3 },
+            plant_5: { ratio: 0.1, abundance: 2 }  // Plant 5 has the highest abundance
         };
 
         // Define insect species ratios for each plant
         const insectComposition = {
             plant_1: [
-                { name: "Aphid", ratio: 0.3 },
+                { name: "Aphid", ratio: 0.2 },
                 { name: "Beetle", ratio: 0.2 },
+                { name: "Caterpillar", ratio: 0.2 },
+                { name: "Thrip", ratio: 0.2 },
+                { name: "Grasshopper", ratio: 0.2 }
+            ],
+            plant_2: [
+                { name: "Aphid", ratio: 0.9 },
+                { name: "Beetle", ratio: 0.05 },
+                { name: "Caterpillar", ratio: 0.025 },
+                { name: "Thrip", ratio: 0.0125 },
+                { name: "Grasshopper", ratio: 0.0125 }
+            ],
+            plant_3: [
+                { name: "Aphid", ratio: 0.1 },
+                { name: "Beetle", ratio: 0.1 },
                 { name: "Caterpillar", ratio: 0.1 },
+                { name: "Thrip", ratio: 0.1 },
+                { name: "Grasshopper", ratio: 0.1 },
+                { name: "Mite", ratio: 0.1 },
+                { name: "Mealybug", ratio: 0.1 },
+                { name: "Leafhopper", ratio: 0.1 },
+                { name: "Parasitic Wasp", ratio: 0.1 },
+                { name: "Bee", ratio: 0.1 }
+            ],
+            plant_4: [
+                { name: "Aphid", ratio: 0.25 },
+                { name: "Beetle", ratio: 0.2 },
+                { name: "Caterpillar", ratio: 0.15 },
                 { name: "Thrip", ratio: 0.15 },
                 { name: "Grasshopper", ratio: 0.1 },
                 { name: "Mite", ratio: 0.05 },
                 { name: "Mealybug", ratio: 0.05 },
                 { name: "Leafhopper", ratio: 0.03 },
                 { name: "Parasitic Wasp", ratio: 0.01 },
-                { name: "Pollinator", ratio: 0.01 }
-            ],
-            plant_2: [
-                { name: "Aphid", ratio: 0.2 },
-                { name: "Beetle", ratio: 0.25 },
-                { name: "Caterpillar", ratio: 0.15 },
-                { name: "Thrip", ratio: 0.1 },
-                { name: "Grasshopper", ratio: 0.1 },
-                { name: "Mite", ratio: 0.05 },
-                { name: "Mealybug", ratio: 0.05 },
-                { name: "Leafhopper", ratio: 0.05 },
-                { name: "Parasitic Wasp", ratio: 0.03 },
-                { name: "Pollinator", ratio: 0.02 }
-            ],
-            plant_3: [
-                { name: "Aphid", ratio: 0.25 },
-                { name: "Beetle", ratio: 0.15 },
-                { name: "Caterpillar", ratio: 0.1 },
-                { name: "Thrip", ratio: 0.2 },
-                { name: "Grasshopper", ratio: 0.1 },
-                { name: "Mite", ratio: 0.1 },
-                { name: "Mealybug", ratio: 0.05 },
-                { name: "Leafhopper", ratio: 0.03 },
-                { name: "Parasitic Wasp", ratio: 0.01 },
-                { name: "Pollinator", ratio: 0.01 }
-            ],
-            plant_4: [
-                { name: "Aphid", ratio: 0.35 },
-                { name: "Beetle", ratio: 0.15 },
-                { name: "Caterpillar", ratio: 0.1 },
-                { name: "Thrip", ratio: 0.1 },
-                { name: "Grasshopper", ratio: 0.05 },
-                { name: "Mite", ratio: 0.1 },
-                { name: "Mealybug", ratio: 0.05 },
-                { name: "Leafhopper", ratio: 0.05 },
-                { name: "Parasitic Wasp", ratio: 0.03 },
-                { name: "Pollinator", ratio: 0.02 }
+                { name: "Bee", ratio: 0.01 }
             ],
             plant_5: [
-                { name: "Aphid", ratio: 0.1 },
-                { name: "Beetle", ratio: 0.1 },
-                { name: "Caterpillar", ratio: 0.05 },
-                { name: "Thrip", ratio: 0.3 },
-                { name: "Grasshopper", ratio: 0.3 },
-                { name: "Mite", ratio: 0.1 },
-                { name: "Mealybug", ratio: 0.03 },
-                { name: "Leafhopper", ratio: 0.01 },
-                { name: "Parasitic Wasp", ratio: 0.005 },
-                { name: "Pollinator", ratio: 0.005 }
+                { name: "Aphid", ratio: 0.5 },
+                { name: "Beetle", ratio: 0.3 },
+                { name: "Caterpillar", ratio: 0.15 },
+                { name: "Thrip", ratio: 0.03 },
+                { name: "Grasshopper", ratio: 0.01 },
+                { name: "Mite", ratio: 0.005 },
+                { name: "Mealybug", ratio: 0.002 },
+                { name: "Leafhopper", ratio: 0.001 },
+                { name: "Parasitic Wasp", ratio: 0.001 },
+                { name: "Bee", ratio: 0.001 }
             ]
         };
+
 
         // Define plant images
         const plantImages = {
@@ -302,22 +293,23 @@
             mealybug: "https://github.com/TermCIC/diversity_index/blob/main/mealybug.png?raw=true",
             leafhopper: "https://github.com/TermCIC/diversity_index/blob/main/leafhopper.png?raw=true",
             'parasitic wasp': "https://github.com/TermCIC/diversity_index/blob/main/parasitoid_wasp.png?raw=true",
-            pollinator: "https://github.com/TermCIC/diversity_index/blob/main/bee.png?raw=true"
+            bee: "https://github.com/TermCIC/diversity_index/blob/main/bee.png?raw=true"
         };
 
         // Function to randomly select a plant type
         function getRandomPlantType() {
             const rand = Math.random();
             let cumulative = 0;
-            for (const [plant, ratio] of Object.entries(plantOccurrence)) {
+            for (const [plant, { ratio }] of Object.entries(plantOccurrence)) {
                 cumulative += ratio;
                 if (rand < cumulative) return plant;
             }
         }
 
-        // Function to get insect counts based on ratios
-        function getInsectCounts(type, abundance) {
+        // Function to get insect counts based on plant type and abundance
+        function getInsectCounts(type) {
             const composition = insectComposition[type];
+            const abundance = plantOccurrence[type].abundance; // Use the plant's specific abundance value
             const counts = {};
 
             composition.forEach(({ name, ratio }) => {
@@ -338,6 +330,7 @@
         const samplingResults = {};
 
         // Function to initialize or update the results for a plant
+        // Function to initialize or update the results for a plant
         function updateResultsTable(plantType, counts) {
             // If the table for this plant type doesn't exist, create it
             if (!samplingResults[plantType]) {
@@ -352,27 +345,30 @@
                 plantResultsDiv.id = `results-${plantType}`;
                 plantResultsDiv.className = "plant-results";
                 plantResultsDiv.innerHTML = `
-            <div class="plant-header">
-                <img src="${plantImages[plantType]}" alt="${plantType}" class="plant-image">
-                <h3>${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Insect</th>
-                        <th>Count</th>
-                        <th>Percentage</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body-${plantType}">
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
-                    </tr>
-                </tfoot>
-            </table>
-        `;
+        <div class="plant-header">
+            <img src="${plantImages[plantType]}" alt="${plantType}" class="plant-image">
+            <h3>${plantType.replace("plant_", "Plant ")} Sampling Results</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Insect</th>
+                    <th>Count</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="table-body-${plantType}">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total Plants Sampled: <span id="total-sampled-${plantType}">0</span></td>
+                </tr>
+                <tr>
+                    <td colspan="3">Total Insects Count: <span id="total-insects-${plantType}">0</span></td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
                 resultsContainer.appendChild(plantResultsDiv);
                 // Add a line break
                 const lineBreak = document.createElement("br");
@@ -393,9 +389,11 @@
             const tableBody = document.getElementById(`table-body-${plantType}`);
             tableBody.innerHTML = "";
             const totalInsects = Object.values(plantResults.insects).reduce((a, b) => a + b, 0);
+
             for (const [insect, count] of Object.entries(plantResults.insects)) {
-                const percentage = ((count / totalInsects) * 100).toFixed(2);
-                const row = `
+                if (count > 0) { // Only include insects with a count greater than 0
+                    const percentage = ((count / totalInsects) * 100).toFixed(2);
+                    const row = `
             <tr>
                 <td>
                     ${insect} <br>
@@ -405,13 +403,20 @@
                 <td>${percentage}%</td>
             </tr>
         `;
-                tableBody.innerHTML += row;
+                    tableBody.innerHTML += row;
+                }
             }
 
             // Update the total plants sampled
             const totalSampled = document.getElementById(`total-sampled-${plantType}`);
             totalSampled.textContent = plantResults.totalPlantsSampled;
+
+            // Update the total insects count
+            const totalInsectsElement = document.getElementById(`total-insects-${plantType}`);
+            totalInsectsElement.textContent = totalInsects;
         }
+
+
 
         // Create the farm grid
         const farm = document.getElementById("farm");
@@ -428,7 +433,7 @@
 
             // Attach click event to button
             button.addEventListener("click", () => {
-                const counts = getInsectCounts(plantType, 5); // Fixed abundance for simplicity
+                const counts = getInsectCounts(plantType); // Use abundance-adjusted insect counts
 
                 // Update the results table
                 updateResultsTable(plantType, counts);
